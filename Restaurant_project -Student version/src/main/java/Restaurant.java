@@ -1,3 +1,5 @@
+/*restaurant finder*/
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -18,14 +20,24 @@ public class Restaurant {
     }
 
     public boolean isRestaurantOpen() {
-        return true;
+        if(getCurrentTime().isAfter(closingTime))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+       // return true;
         //DELETE ABOVE STATEMENT AND WRITE CODE HERE
     }
 
     public LocalTime getCurrentTime(){ return  LocalTime.now(); }
 
     public List<Item> getMenu() {
-        return null;
+        List<Item> menu = this.menu;
+        return menu;
+        //return null;
         //DELETE ABOVE RETURN STATEMENT AND WRITE CODE HERE
     }
 
