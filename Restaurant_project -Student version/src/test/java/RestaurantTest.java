@@ -1,11 +1,17 @@
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.time.LocalTime;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+@ExtendWith(MockitoExtension.class)
 class RestaurantTest {
     Restaurant restaurant;
     //REFACTOR ALL THE REPEATED LINES OF CODE
@@ -15,13 +21,20 @@ class RestaurantTest {
 
     RestaurantService service = new RestaurantService();
     Restaurant restaurant;
-
+    @BeforeEach
+    public void createRestaurant(){
+        LocalTime openingTime = LocalTime.parse("10:30:00");
+        LocalTime closingTime = LocalTime.parse("22:00:00");
+        restaurant =new Restaurant("Amelie's cafe","Chennai",openingTime,closingTime);
+        restaurant.addToMenu("Sweet corn soup",200);
+        restaurant.addToMenu("Vegetable lasagne", 300);
+    }
     private void createMockRestaurant() {
         LocalTime openingTime = LocalTime.parse("10:30:00");
         LocalTime closingTime = LocalTime.parse("22:00:00");
         restaurant = service.addRestaurant("Amelie's cafe", "Chennai", openingTime, closingTime);
-        restaurant.addToMenu("Sweet corn soup", 119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        restaurant.addToMenu("Sweet corn soup", 200);
+        restaurant.addToMenu("Vegetable lasagne", 300);
 
     }
 
@@ -55,11 +68,11 @@ class RestaurantTest {
         LocalTime openingTime = LocalTime.parse("10:30:00");
         LocalTime closingTime = LocalTime.parse("22:00:00");
         restaurant = new Restaurant("Amelie's cafe", "Chennai", openingTime, closingTime);
-        restaurant.addToMenu("Sweet corn soup", 119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        restaurant.addToMenu("Sweet corn soup", 200);
+        restaurant.addToMenu("Vegetable lasagne", 300);
 
         int initialMenuSize = restaurant.getMenu().size();
-        restaurant.addToMenu("Sizzling brownie", 319);
+        restaurant.addToMenu("Sizzling brownie", 400);
         assertEquals(initialMenuSize + 1, restaurant.getMenu().size());
     }
 
@@ -68,8 +81,8 @@ class RestaurantTest {
         LocalTime openingTime = LocalTime.parse("10:30:00");
         LocalTime closingTime = LocalTime.parse("22:00:00");
         restaurant = new Restaurant("Amelie's cafe", "Chennai", openingTime, closingTime);
-        restaurant.addToMenu("Sweet corn soup", 119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        restaurant.addToMenu("Sweet corn soup", 200);
+        restaurant.addToMenu("Vegetable lasagne", 300);
 
         int initialMenuSize = restaurant.getMenu().size();
         restaurant.removeFromMenu("Vegetable lasagne");
@@ -81,12 +94,22 @@ class RestaurantTest {
         LocalTime openingTime = LocalTime.parse("10:30:00");
         LocalTime closingTime = LocalTime.parse("22:00:00");
         restaurant = new Restaurant("Amelie's cafe", "Chennai", openingTime, closingTime);
-        restaurant.addToMenu("Sweet corn soup", 119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        restaurant.addToMenu("Sweet corn soup", 200);
+        restaurant.addToMenu("Vegetable lasagne", 300);
 
         assertThrows(itemNotFoundException.class,
                 () -> restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    @Test
+    public void order_value_should_be_500_when_SweetCornSoup_and_Vegetable_lasagne_are_ordered() throws restaurantNotFoundException {
+        //Arrange
+        List<String> orderedItemNames = Arrays.asList("Sweet corn soup", "Vegetable lasagne");
 
+        //Act
+        int totalOrderValue = restaurant.getOrderValue(orderedItemNames);
+
+        //Assert
+        assertThat(totalOrderValue, equalTo(388));
+    }
 }
